@@ -1,0 +1,21 @@
+rule RagnarLocker_1 : malware {
+    meta:
+        description = "Ransomware that targetted CMA/CGM, PSE Credit Union, october 2020"
+        researcher = "Alexandre MATOUSEK"
+        source = "CERT-OCD"
+        date = "08/10/2020"
+        category = "ransomware"
+    strings:
+        $ = "\\\\.\\PHYSICALDRIVE%d" wide
+        $ = "%s-%s-%s-%s-%s" wide
+        $ = "MachineGuid" wide
+        $ = "ProductName" wide
+        $ = "%08X" wide
+        $ = "\\notepad.exe" wide
+        $ = "WinSta0\\Default" wide
+        $ = "Wow64EnableWow64FsRedirection" ascii
+        $ = { 0D 0A 25 73 0D 0A 0D 0A 25 73 0D 0A 25 73 0D 0A 25 73 0D 0A 0D 0A 25 73 0D 0A }
+    condition:
+        uint16(0) == 0x5A4D and all of them
+}
+
