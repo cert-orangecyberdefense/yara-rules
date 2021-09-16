@@ -1,0 +1,23 @@
+rule VermilionStrike : malware {
+    meta:
+        description = "Reimplementation of Cobalt Strike for Windows and Linux"
+        source = "OCD"
+        date = "13/09/21"
+        researcher = "Alexandre MATOUSEK"
+        category = "rat"
+    strings:
+        $ = "eventlogger" ascii fullword
+        $ = "\\\\%s\\pipe\\msagent_%x" ascii fullword
+        $ = "%d/%d/%d" ascii fullword
+        $ = "%02d:%02d:%02d" ascii fullword
+        $ = "Content-Type: text/html" ascii
+        $ = "Cookie: " ascii fullword
+        $ = "https=" ascii fullword
+        $ = "http=" ascii fullword
+        $ = "socks=" ascii fullword
+        $ = "\\cmd.exe" ascii fullword
+        $ = " & exit" ascii fullword
+    condition:
+        all of them
+}
+
