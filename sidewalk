@@ -1,0 +1,43 @@
+rule InstallUtilSidewalkLoader_1 : malware {
+    meta:
+        description = "dotnet first stage for sidewalk malware"
+        source = "OCD"
+        date = "13/09/21"
+        researcher = "Alexandre MATOUSEK"
+        category = "apt"
+    strings:
+        $ = "Hollower"
+        $ = "RunShellcode"
+        $ = "ETWPatcher"
+        $ = "DoPatch"
+        $ = "GetEntryPointFromImage"
+        $ = "DecodeFromPayloadFile"
+        $ = "IsOSWin8OrLater"
+        $ = "USCInstaller"
+        $ = "WriteShellcodeToSection"
+    condition:
+        all of them
+}
+
+rule Sidewalk_1 : malware {
+    meta:
+        description = "sidewalk shellcode"
+        source = "OCD"
+        date = "13/09/21"
+        researcher = "Alexandre MATOUSEK"
+        category = "apt"
+    strings:
+        $ = "/c DEL " wide fullword
+        $ = " >> NUL" wide fullword
+        $ = "EtwEventWrite" ascii fullword
+        $ = "explorer.exe" wide fullword
+        $ = "svchost.exe" wide fullword
+        $ = "\\*.dll" wide fullword
+        $ = "SeDebugPrivilege" wide fullword
+        $ = { C7 01 65 78 70 61 } // salsa20/chacha20
+        $ = { C7 41 04 6E 64 20 33 }
+        $ = { C7 41 08 32 2D 62 79 }
+        $ = { C7  41 0C 74 65 20 6B }
+    condition:
+        all of them and filesize < 50KB
+}
