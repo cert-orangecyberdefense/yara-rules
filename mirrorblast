@@ -1,0 +1,37 @@
+rule MirrorBlastRebol : malware {
+    meta:
+        description = "MirrorBlast Rebol script"
+        source = "OCD"
+        date = "07/10/21"
+        researcher = "Alexandre MATOUSEK"
+        category = ""
+    strings:
+        $s1 = "echo %USERDOMAIN%\\%USERNAME% > name" ascii
+        $s2 = "echo %PROCESSOR_ARCHITECTURE% > arch" ascii
+        $s3 = "enbase join \"name=\" [trim/all read %name \"&os=\" trim/all read %os \"&arch=\" trim/all read %arch \"&build=" ascii
+        $s4 = "read join " ascii
+        $s5 = "&status=true" ascii
+    condition:
+        all of them
+}
+
+rule MirrorBlastXls : malware {
+    meta:
+        description = "MirrorBlast Xls file that downloads msi file"
+        source = "OCD"
+        date = "07/10/21"
+        researcher = "Alexandre MATOUSEK"
+        category = "downloader"
+    strings:
+        $m1 = "eval('}" ascii
+        $m2 = ".reverse().join('')" ascii
+        $a1 = "tcejbOXevitcA wen" ascii
+        $a2 = "rellatsnI.rellatsnIswodniW" ascii
+        $a3 = "2=leveLIU" ascii
+        $a4 = "tcudorPllatsnI" ascii
+        $b1 = "**2**=**l**e**v**e**L**I**U**"
+        $b2 = "**t**c**u**d**o**r**P**l**l**a**t**s**n**I**"
+    condition:
+        all of ($m*) and (all of ($a*) or all of ($b*)) and uint32(0) == 0xE011CFD0 and uint32(4) == 0xE11AB1A1
+}
+
