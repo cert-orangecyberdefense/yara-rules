@@ -1,20 +1,3 @@
-rule MirrorBlastRebol : malware {
-    meta:
-        description = "MirrorBlast Rebol script"
-        source = "OCD"
-        date = "07/10/21"
-        researcher = "Alexandre MATOUSEK"
-        category = ""
-    strings:
-        $s1 = "echo %USERDOMAIN%\\%USERNAME% > name" ascii
-        $s2 = "echo %PROCESSOR_ARCHITECTURE% > arch" ascii
-        $s3 = "enbase join \"name=\" [trim/all read %name \"&os=\" trim/all read %os \"&arch=\" trim/all read %arch \"&build=" ascii
-        $s4 = "read join " ascii
-        $s5 = "&status=true" ascii
-    condition:
-        all of them
-}
-
 rule MirrorBlastXls : malware {
     meta:
         description = "MirrorBlast Xls file that downloads msi file"
@@ -35,3 +18,38 @@ rule MirrorBlastXls : malware {
         all of ($m*) and (all of ($a*) or all of ($b*)) and uint32(0) == 0xE011CFD0 and uint32(4) == 0xE11AB1A1
 }
 
+rule MirrorBlastRebol : malware {
+    meta:
+        description = "MirrorBlast Rebol script"
+        source = "OCD"
+        date = "07/10/21"
+        researcher = "Alexandre MATOUSEK"
+        category = "downloader"
+    strings:
+        $s1 = "echo %USERDOMAIN%\\%USERNAME% > name" ascii
+        $s2 = "echo %PROCESSOR_ARCHITECTURE% > arch" ascii
+        $s3 = "enbase join \"name=\" [trim/all read %name \"&os=\" trim/all read %os \"&arch=\" trim/all read %arch \"&build=" ascii
+        $s4 = "read join " ascii
+        $s5 = "&status=true" ascii
+    condition:
+        all of them
+}
+
+rule MirrorBlastKixTart : malware {
+    meta:
+        description = "MirrorBlast KixStart script"
+        source = "OCD"
+        date = "07/10/21"
+        researcher = "Alexandre MATOUSEK"
+        category = "downloader"
+    strings:
+        $ = "WinMgmts:root/cimv2" ascii
+        $ = "Select * FROM Win32_Process" ascii
+        $ = "WindowsInstaller.Installer" ascii
+        $ = "xml_object" ascii
+        $ = "savetofile" ascii
+        $ = "MSXML2.DOMDocument.3.0" ascii
+        $ = "<B64DECODE xmlns:dt=\"urn:schemas-microsoft-com:datatypes\" dt:dt=\"bin.base64\">" ascii
+    condition:
+        all of them
+}
