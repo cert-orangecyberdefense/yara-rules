@@ -1,0 +1,16 @@
+rule FickerStealer : malware {
+    meta:
+        description = "Stealer, loaded by hancitor june 2021"
+        source = "OCD"
+        date = "24/06/21"
+        researcher = "Alexandre MATOUSEK"
+        category = "stealer"
+    strings:
+        $ = "\"SomeNone" ascii fullword
+        $ = ".Kind" ascii fullword
+        $ = "kindmessage" ascii fullword
+        $ = "C:\\ProgramData\\kaosdma.txt" wide ascii
+        $ = "http://api.ipify.org/?format=xml" ascii wide
+    condition:
+        all of them
+}
