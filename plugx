@@ -1,0 +1,43 @@
+rule PlugX_1 : malware {
+
+    meta:
+
+        description = "PlugX malware, february 2017, comes as trojanized DLL of legit exe, APT, screenlogger, keylogger, etc"
+
+        researcher = "Renaud Tabary"
+
+        date = "2017-02-13"
+
+        category = "apt"
+
+    strings:
+
+        $ = "XPlugKeyLogger.cpp" ascii
+
+        $ = "XThreadManager.cpp" ascii
+
+        $ = "XBoot.cpp" ascii
+
+        $ = "XPlug.cpp" ascii
+
+        $ = "EName:%s,EAddr:0x%p,ECode:0x%p,EAX:%p,EBX:%p,ECX:%p,EDX:%p,ESI:%p,EDI:%p,EBP:%p,ESP:%p,EIP:%p" ascii
+
+        $ = "TelnetT2" ascii
+
+        $ = "file: %s, line: %d, error: [%d]%s" ascii
+
+        $ = "XSoUdp.cpp" ascii
+
+        $ = "plug4.0(shellcode)" ascii
+
+        $ = "QUARTZ.dll.lib" wide
+
+        $ = ".PIPERASUSER(%d)" wide
+
+        $ = { 813?47554C5074 }  // cmp [xx], GULP
+
+    condition:
+
+        isPE and KeyLogger and 10 of them
+
+}
